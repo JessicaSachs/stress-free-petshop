@@ -40,12 +40,10 @@ export default {
     }
   },
   setup() {
+    const { n } = useI18n()
     const { dispatch } = useStore()
     dispatch('products/fetchProducts')
-
-    return {
-      ...useI18n(),
-    }
+    return { n }
   }
 }
 </script>

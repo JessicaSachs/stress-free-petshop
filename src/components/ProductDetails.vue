@@ -2,10 +2,16 @@
   <section v-if="product">
     <h2>Product Details</h2>
     <h3>{{ product.name }}</h3>
-    <p data-testid="product-count">
-<!--      {{ n('items', productsInCartForId(product.id).quantity) }} -->
-      {{ productsInCartForId(product.id).quantity }}
-    </p>
+    <Suspence>
+      <template #fallback>
+        <p>loading ...</p>
+      </template>
+      <template #default>
+        <p data-testid="product-count">
+          {{ n(productsInCartForId(product.id).quantity, 'currency') }}
+        </p>
+      </template>
+    </Suspence>
   </section>
 </template>
 
@@ -18,10 +24,11 @@ export default {
     productId: { required: true, type: [Number, String] }
   },
   async setup(props) {
+    const { n } = useI18n()
     const { dispatch, getters } = useStore()
     const product = await dispatch('products/getProduct', props.productId)
     return {
-      // ...useI18n(),
+      n,
       product,
       productsInCartForId: getters['cart/productsInCartForId']
     }
